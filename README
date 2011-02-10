@@ -5,14 +5,14 @@ NAME
 SYNOPSIS
         my $locker1 = IPC::Lock::RabbitMQ->new( mq => $rabbitfoot );
         my $locker2 = IPC::Lock::RabbitMQ->new( mq => $rabbitfoot );
-    
+
         {
             my $lock  = $locker1->lock("foo");
             my $false = $locker2->lock("foo");
         }
         # $lock out of scope here, i.e.
         # $lock = undef;
-    
+
         my $new_lock = $locker2->lock("foo");
         $new_lock->unlock;
 
