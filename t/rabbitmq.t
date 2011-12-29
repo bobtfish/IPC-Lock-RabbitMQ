@@ -9,7 +9,7 @@ use File::ShareDir;
 my $rf = Net::RabbitFoot->new(
 #    verbose => 1,
 )->load_xml_spec(
-    File::ShareDir::dist_dir("AnyEvent-RabbitMQ") . '/fixed_amqp0-8.xml';
+    File::ShareDir::dist_dir("AnyEvent-RabbitMQ") . '/fixed_amqp0-8.xml'
 );
 eval {
     $rf->connect(
