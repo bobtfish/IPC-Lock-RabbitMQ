@@ -7,7 +7,9 @@ use Scalar::Util qw/ refaddr /;
 use IPC::Lock::RabbitMQ::Lock;
 use namespace::autoclean;
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
+
+with 'IPC::Lock::RabbitMQ::HasTimeout';
 
 has mq => (
     isa => MQ,
@@ -67,23 +69,26 @@ sub lock {
     my $lock_cv = AnyEvent->condvar;
 
     my $channel_cv = AnyEvent->condvar;
+    my $t = $self->_gen_timer($channel_cv, 'Open channel');
     $self->mq->open_channel(
          on_success => sub { $channel_cv->send(shift()) },
          on_failure => sub { $channel_cv->croak(shift()) },
          on_close => sub { $lock_cv->send(0) }, # Channel torn down if we consume locked queue.
-     );
-     my $channel = $channel_cv->recv;
-
-     my $queue_cv = AnyEvent->condvar;
-     $channel->declare_queue(
+    );
+    my $channel = $channel_cv->recv;
+    undef $t;
+    my $queue_cv = AnyEvent->condvar;
+    $t = $self->_gen_timer($queue_cv, 'Declare queue');
+    $channel->declare_queue(
          queue => 'lock_' . $key,
          auto_delete => 1,
          on_success => sub { $queue_cv->send(1) },
          on_failure => sub { $queue_cv->croak(shift()) },
-     );
-     $queue_cv->recv;
-
-     $channel->consume(
+    );
+    $queue_cv->recv;
+    undef $t;
+    $t = $self->_gen_timer($lock_cv, 'Start consume');
+    $channel->consume(
         consumer_tag => refaddr($self) . $key,
         queue => 'lock_' . $key,
         exclusive => 1,
@@ -94,7 +99,8 @@ sub lock {
         on_failure => sub { $lock_cv->send(0) },
     );
     if ($lock_cv->recv) {
-        return IPC::Lock::RabbitMQ::Lock->new( locker => $self, lock_name => $key, channel => $channel );
+        undef $t;
+        return IPC::Lock::RabbitMQ::Lock->new( locker => $self, lock_name => $key, channel => $channel, timeout => $self->timeout );
     }
     return;
 }
