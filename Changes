@@ -1,3 +1,8 @@
+0.003
+  - Ensure that timer is set using accurate time (by calling ->now_update)
+    so that timer runs for the full interval, even if the event loop hasn't
+    run for a long time.
+
 0.002
   - Allow locks to time out.
 

@@ -13,6 +13,7 @@ has timeout => (
 sub _gen_timer {
     my ($self, $cv, $name) = @_;
     return unless $self->timeout;
+    AnyEvent->now_update;
     AnyEvent->timer(after => $self->timeout, cb => sub { $cv->throw("$name  timed out after " . $self->timeout) });
 }
 
