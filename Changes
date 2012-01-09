@@ -1,3 +1,6 @@
+0.004
+  - Fix timeout code to not die.
+
 0.003
   - Ensure that timer is set using accurate time (by calling ->now_update)
     so that timer runs for the full interval, even if the event loop hasn't
