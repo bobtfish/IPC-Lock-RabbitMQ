@@ -19,3 +19,22 @@ sub _gen_timer {
 
 1;
 
+=head1 NAME
+
+IPC::Lock::RabbitMQ::HasTimeout - Role for things which timeout.
+
+=head1 ATTRIBUTES
+
+=head2 timeout
+
+The timeout value, in secions.
+
+=head1 METHODS
+
+=head2 _gen_timer
+
+Genertes an AnyEvent->timer for the timeout.
+
+=cut
+
+

@@ -1,3 +1,6 @@
+0.005
+  - Fix dependencies and put onto CPAN.
+
 0.004
   - Fix timeout code to not die.
 
