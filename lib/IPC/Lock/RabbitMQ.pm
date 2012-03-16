@@ -7,7 +7,7 @@ use Scalar::Util qw/ refaddr /;
 use IPC::Lock::RabbitMQ::Lock;
 use namespace::autoclean;
 
-our $VERSION = '0.005';
+our $VERSION = '0.006';
 
 with 'IPC::Lock::RabbitMQ::HasTimeout';
 

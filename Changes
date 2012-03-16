@@ -1,3 +1,6 @@
+0.006
+  - Fix bug when trying to unlock and encountering a timeout.
+
 0.005
   - Fix dependencies and put onto CPAN.
 
