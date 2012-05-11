@@ -1,3 +1,4 @@
+0.007
   - Fix timeout callback being called in global destruction
     not working as expected.
 
