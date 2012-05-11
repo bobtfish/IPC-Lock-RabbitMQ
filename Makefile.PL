@@ -7,6 +7,7 @@ use Module::Install::AuthorTests;
 name 'IPC-Lock-RabbitMQ';
 all_from 'lib/IPC/Lock/RabbitMQ.pm';
 
+requires 'Devel::GlobalDestruction';
 requires 'Net::RabbitFoot';
 requires 'Moose';
 requires 'namespace::autoclean';

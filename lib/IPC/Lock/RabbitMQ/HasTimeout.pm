@@ -2,6 +2,7 @@ package IPC::Lock::RabbitMQ::HasTimeout;
 use Moose::Role;
 use MooseX::Types::Moose qw/ Int /;
 use AnyEvent;
+use Devel::GlobalDestruction;
 use namespace::autoclean;
 
 has timeout => (
@@ -14,7 +15,13 @@ sub _gen_timer {
     my ($self, $cv, $name) = @_;
     return unless $self->timeout;
     AnyEvent->now_update;
-    AnyEvent->timer(after => $self->timeout, cb => sub { $cv->croak("$name  timed out after " . $self->timeout) });
+    AnyEvent->timer(
+        after => $self->timeout,
+        cb => sub {
+            return if in_global_destruction;
+            $cv->croak("$name  timed out after " . $self->timeout);
+        },
+    );
 }
 
 1;
